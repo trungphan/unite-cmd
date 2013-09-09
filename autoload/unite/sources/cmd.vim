@@ -5,13 +5,16 @@ let s:unite_source = {
       \ 'name': 'cmd',
       \ }
 
-function! s:unite_source.gather_candidates(args, context)
 
-  return [
-      \ {'word': 'Navigate: Files', 'source': 'cmd', 'kind': 'command', 'action__command': ':Unite -start-insert -buffer-name=Files file_rec/async'},
-      \ {'word': 'Navigate: Outline', 'source': 'cmd', 'kind': 'command', 'action__command': ':Unite -start-insert -buffer-name=Outline outline'},
-      \ {'word': 'Run: Make', 'source': 'cmd', 'kind': 'command', 'action__command': ':make | cw'},
-      \ ]
+function! s:unite_source.gather_candidates(args, context)
+    let result = []
+    if !exists('g:unite_cmd_list')
+        let g:unite_cmd_list = [["Help", "command", ":help unite-cmd"]]
+    endif
+    for l in g:unite_cmd_list
+        call add(result, {'word': l[0], 'source': 'cmd', 'kind': l[1], 'action__command': l[2]})
+    endfor
+    return result
 endfunction
 
 function! unite#sources#cmd#define()
